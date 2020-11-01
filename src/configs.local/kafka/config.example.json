@@ -4,6 +4,7 @@
   "ssl_cert_file": "./configs.local/kafka/service.cert",
   "ssl_key_file": "./configs.local/kafka/service.key",
   "timeout_send": 4,
+  "timeout_poll": 4,
   "topic": "topic-id",
   "client": "client-id",
   "group": "group-id"

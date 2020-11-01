@@ -30,7 +30,7 @@ class Worker(object):
         )
 
     def run(self):
-        if self.config.concurrent_checks == 1:
+        if self.config.concurrency.checks == 1:
             run_method = self._run_single_thread
         else:
             run_method = self._run_thread_pool
@@ -51,14 +51,14 @@ class Worker(object):
 
     def _run_thread_pool(self):
         errors = []
-        with futures.ThreadPoolExecutor(max_workers=self.config.concurrent_checks) as executor:
+        with futures.ThreadPoolExecutor(max_workers=self.config.concurrency.checks) as executor:
             # got this from docs.python.org
             future_tasks = [executor.submit(self._check_and_publish, website)
                             for website in self.config.websites]
 
             # launch parallel checks and ignore errors
             # but raise them later
-            for task in futures.as_completed(future_tasks, timeout=self.config.concurrent_timeout):
+            for task in futures.as_completed(future_tasks, timeout=self.config.concurrency.timeout):
                 task_result = task.result()
                 if task_result is not None:
                     errors.append(task_result)

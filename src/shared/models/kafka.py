@@ -20,8 +20,9 @@ class KafkaSettings(BaseDto):
     client: typing.Optional[str] = None  # optional for producer
     group: typing.Optional[str] = None  # optional for producer
 
-    # default timeout will be used if this value is empty
+    # default timeout will be used if these values are empty
     timeout_send: typing.Optional[float] = None
+    timeout_poll: typing.Optional[float] = None
 
     @classmethod
     def from_dict(cls, data):
@@ -29,6 +30,10 @@ class KafkaSettings(BaseDto):
         timeout_send = data.get("timeout_send")
         if not timeout_send or timeout_send < 0:
             timeout_send = _DEFAULT_TIMEOUT
+
+        timeout_poll = data.get("timeout_poll")
+        if not timeout_poll or timeout_poll < 0:
+            timeout_poll = _DEFAULT_TIMEOUT
 
         return KafkaSettings(
             bootstrap_servers=data["bootstrap_servers"],
@@ -39,4 +44,5 @@ class KafkaSettings(BaseDto):
             client=data.get("client"),
             group=data.get("group"),
             timeout_send=timeout_send,
+            timeout_poll=timeout_poll,
         )

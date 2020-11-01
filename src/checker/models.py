@@ -2,7 +2,7 @@
 import dataclasses
 import typing
 
-from shared.models import BaseDto, BaseFileConfig, KafkaSettings, WebsiteSettings
+from shared.models import BaseDto, BaseFileConfig, ConcurrencySettings, KafkaSettings, WebsiteSettings
 
 _DEFAULT_CONCURRENT_CHECKS = 4
 _DEFAULT_CONCURRENT_TIMEOUT = 60
@@ -14,14 +14,7 @@ class CheckerSettings(BaseFileConfig):
 
     kafka: KafkaSettings
     websites: typing.List[WebsiteSettings]
-
-    # maximum amount of checks running at the same time
-    # if this parameter is empty then default concurrency limit will be used
-    concurrent_checks: int
-
-    # common timeout (seconds) for all website checks launched concurrently
-    # if this parameter is empty then default concurrency timeout will be used
-    concurrent_timeout: typing.Optional[float] = None
+    concurrency: ConcurrencySettings
 
     # checks are repeated once per this interval
     # leave this interval empty for single check
@@ -32,15 +25,10 @@ class CheckerSettings(BaseFileConfig):
         # type: (typing.Mapping[str, typing.Any]) -> CheckerSettings
         # kafka config is provided as a path to the file
         kafka_config = KafkaSettings.from_dict(cls._load_file_data(data["kafka_config_path"]))
+
         websites = [WebsiteSettings.from_dict(i) for i in data["websites"]]
 
-        concurrent_checks = data.get("concurrent_checks")
-        if not concurrent_checks or concurrent_checks < 1:  # there should be at least one check at a time
-            concurrent_checks = _DEFAULT_CONCURRENT_CHECKS
-
-        concurrent_timeout = data.get("concurrent_timeout")
-        if not concurrent_timeout or concurrent_timeout < 0:
-            concurrent_timeout = _DEFAULT_CONCURRENT_TIMEOUT
+        concurrency_config = ConcurrencySettings.from_dict(data["concurrency"])
 
         interval = data.get("interval")
         if not interval or interval < 1:
@@ -49,8 +37,7 @@ class CheckerSettings(BaseFileConfig):
         return CheckerSettings(
             kafka=kafka_config,
             websites=websites,
-            concurrent_checks=concurrent_checks,
-            concurrent_timeout=concurrent_timeout,
+            concurrency=concurrency_config,
             interval=interval,
         )
 
