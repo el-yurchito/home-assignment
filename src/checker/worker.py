@@ -10,8 +10,8 @@ import typing
 import kafka
 import requests
 
-from checker.models import CheckerSettings, AvailabilityCheckResult
-from shared.models import WebsiteSettings
+from checker.models import CheckerSettings
+from shared.models import CheckResult, WebsiteSettings
 
 
 class Worker(object):
@@ -88,7 +88,7 @@ class Worker(object):
 
     @classmethod
     def _check_website(cls, website):
-        # type: (WebsiteSettings) -> AvailabilityCheckResult
+        # type: (WebsiteSettings) -> CheckResult
         """
         Checking of single website.
 
@@ -130,9 +130,10 @@ class Worker(object):
         else:
             pattern_found = None
 
-        return AvailabilityCheckResult(
+        return CheckResult(
             duration=(call_finished - call_started).total_seconds(),
             error=error,
             pattern_found=pattern_found,
             status_code=status_code,
+            url=website.url,
         )

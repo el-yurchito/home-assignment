@@ -2,7 +2,7 @@
 import dataclasses
 import typing
 
-from shared.models import BaseDto, BaseFileConfig, ConcurrencySettings, KafkaSettings, WebsiteSettings
+from shared.models import BaseFileConfig, ConcurrencySettings, KafkaSettings, WebsiteSettings
 
 _DEFAULT_CONCURRENT_CHECKS = 4
 _DEFAULT_CONCURRENT_TIMEOUT = 60
@@ -40,20 +40,3 @@ class CheckerSettings(BaseFileConfig):
             concurrency=concurrency_config,
             interval=interval,
         )
-
-
-@dataclasses.dataclass
-class AvailabilityCheckResult(BaseDto):
-    """ AvailabilityCheckResult contains result of checking one website. """
-
-    # check duration in seconds
-    duration: float
-
-    # str representation of an error if there was any
-    error: typing.Optional[str] = None
-
-    # whether or not regex was found (None in case there isn't regex for this website)
-    pattern_found: typing.Optional[bool] = None
-
-    # http status; empty in case of timeout
-    status_code: typing.Optional[int] = None

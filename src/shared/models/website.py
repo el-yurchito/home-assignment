@@ -12,7 +12,7 @@ _DEFAULT_TIMEOUT = 5
 class WebsiteSettings(BaseDto):
     """ Website availability checking settings. """
 
-    url: str
+    url: str  # website url; also an id
     regex: typing.Optional[bytes] = None  # if this parameter is empty then no regex check will be made
     timeout: typing.Optional[float] = None  # if this parameter is empty then default timeout will be used
 
