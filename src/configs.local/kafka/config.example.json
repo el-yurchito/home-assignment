@@ -1,0 +1,10 @@
+{
+  "bootstrap_servers": ["host1:port1", "host2:port2"],
+  "ssl_ca_file": "./configs.local/kafka/ca.pem",
+  "ssl_cert_file": "./configs.local/kafka/service.cert",
+  "ssl_key_file": "./configs.local/kafka/service.key",
+  "timeout_send": 4,
+  "topic": "topic-id",
+  "client": "client-id",
+  "group": "group-id"
+}

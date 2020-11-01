@@ -1,0 +1,6 @@
+.idea
+.venv
+
+configs.local
+config.json
+!config.example.json

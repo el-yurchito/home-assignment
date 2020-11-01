@@ -1,0 +1,13 @@
+{
+  "kafka_config_path": "./configs.local/kafka/config.json",
+  "websites": [
+    {
+      "url": "https://aiven.io",
+      "regex": "Save (\\w+) and mon(\\w+)",
+      "timeout": 5
+    }
+  ],
+  "concurrent_checks": 4,
+  "concurrent_timeout": 60,
+  "interval": 3600
+}
