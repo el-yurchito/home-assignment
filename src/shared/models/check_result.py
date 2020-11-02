@@ -15,6 +15,9 @@ class CheckResult(BaseDto):
     # check duration in seconds
     duration: float
 
+    # check started timestamp
+    started_at: float = 0
+
     # str representation of an error if there was any
     error: typing.Optional[str] = None
 
@@ -23,3 +26,7 @@ class CheckResult(BaseDto):
 
     # http status; empty in case of timeout
     status_code: typing.Optional[int] = None
+
+    @classmethod
+    def from_dict(cls, data):
+        return CheckResult(**data)

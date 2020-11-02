@@ -1,0 +1,4 @@
+{
+  "connection_string": "your connection string here",
+  "page_size": 100
+}

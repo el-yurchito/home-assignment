@@ -1,5 +1,12 @@
 {
   "kafka_config_path": "./configs.local/kafka/config.json",
+  "pg_config_path": "./configs.local/pg/config.json",
+  "websites": [
+    {
+      "url": "https://aiven.io",
+      "table_name": "t_check_result"
+    }
+  ],
   "concurrency": {
     "checks": 4,
     "timeout": 60

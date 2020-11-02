@@ -4,4 +4,5 @@ from shared.models.base_file_config import BaseFileConfig
 from shared.models.check_result import CheckResult
 from shared.models.concurrency import ConcurrencySettings
 from shared.models.kafka import KafkaSettings
-from shared.models.website import WebsiteSettings
+from shared.models.pg import PostgresqlSettings
+from shared.models.website import WebsiteCheckSettings, WebsiteWriteSettings

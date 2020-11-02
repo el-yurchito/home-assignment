@@ -2,7 +2,7 @@
 import dataclasses
 import typing
 
-from shared.models import BaseFileConfig, ConcurrencySettings, KafkaSettings, WebsiteSettings
+from shared.models import BaseFileConfig, ConcurrencySettings, KafkaSettings, WebsiteCheckSettings
 
 _DEFAULT_CONCURRENT_CHECKS = 4
 _DEFAULT_CONCURRENT_TIMEOUT = 60
@@ -13,7 +13,9 @@ class CheckerSettings(BaseFileConfig):
     """ CheckerSettings represents settings of checker component. """
 
     kafka: KafkaSettings
-    websites: typing.List[WebsiteSettings]
+
+    websites: typing.List[WebsiteCheckSettings]
+
     concurrency: ConcurrencySettings
 
     # checks are repeated once per this interval
@@ -26,7 +28,7 @@ class CheckerSettings(BaseFileConfig):
         # kafka config is provided as a path to the file
         kafka_config = KafkaSettings.from_dict(cls._load_file_data(data["kafka_config_path"]))
 
-        websites = [WebsiteSettings.from_dict(i) for i in data["websites"]]
+        websites = [WebsiteCheckSettings.from_dict(i) for i in data["websites"]]
 
         concurrency_config = ConcurrencySettings.from_dict(data["concurrency"])
 

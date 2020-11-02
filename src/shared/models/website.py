@@ -9,7 +9,7 @@ _DEFAULT_TIMEOUT = 5
 
 
 @dataclasses.dataclass
-class WebsiteSettings(BaseDto):
+class WebsiteCheckSettings(BaseDto):
     """ Website availability checking settings. """
 
     url: str  # website url; also an id
@@ -18,7 +18,7 @@ class WebsiteSettings(BaseDto):
 
     @classmethod
     def from_dict(cls, data):
-        # type: (typing.Mapping[str, typing.Any]) -> WebsiteSettings
+        # type: (typing.Mapping[str, typing.Any]) -> WebsiteCheckSettings
         regex = data.get("regex")
         if regex:
             regex = regex.encode("utf8")  # transform to bytes to use on bytes responses
@@ -26,8 +26,21 @@ class WebsiteSettings(BaseDto):
         else:
             regex = None
 
-        return WebsiteSettings(
+        return WebsiteCheckSettings(
             url=data["url"],
             regex=regex,
             timeout=data.get("timeout") or _DEFAULT_TIMEOUT,
         )
+
+
+@dataclasses.dataclass
+class WebsiteWriteSettings(BaseDto):
+    """ WebsiteWriteSettings can tell DB table website metrics should be written to. """
+
+    url: str  # website url; also an id
+    table_name: str
+
+    @classmethod
+    def from_dict(cls, data):
+        # type: (typing.Mapping[str, str]) -> WebsiteWriteSettings
+        return WebsiteWriteSettings(**data)

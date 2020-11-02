@@ -11,7 +11,7 @@ import kafka
 import requests
 
 from checker.models import CheckerSettings
-from shared.models import CheckResult, WebsiteSettings
+from shared.models import CheckResult, WebsiteCheckSettings
 
 
 class Worker(object):
@@ -44,12 +44,24 @@ class Worker(object):
                 break
 
     def _run_single_thread(self):
+        """
+        Processes websites one by one.
+        Fails on the first unhandled exception.
+        """
+
         for website in self.config.websites:
             exc = self._check_and_publish(website)
             if exc is not None:
                 raise exc
 
     def _run_thread_pool(self):
+        """
+        Processes websites using thread pool.
+        Unhandled exception in one thread doesn't affect other ones,
+        but "aggregated" exception containing all unhandled
+        exceptions will be raised in the end.
+        """
+
         errors = []
         with futures.ThreadPoolExecutor(max_workers=self.config.concurrency.checks) as executor:
             # got this from docs.python.org
@@ -68,7 +80,7 @@ class Worker(object):
             raise RuntimeError(f"{len(errors)} occurred during website checks:\n{errors_str}")
 
     def _check_and_publish(self, website):
-        # type: (WebsiteSettings) -> typing.Optional[Exception]
+        # type: (WebsiteCheckSettings) -> typing.Optional[Exception]
         """
         Makes website check and publishes result to kafka.
         Captures any exception but returns is as a result for further handling.
@@ -88,7 +100,7 @@ class Worker(object):
 
     @classmethod
     def _check_website(cls, website):
-        # type: (WebsiteSettings) -> CheckResult
+        # type: (WebsiteCheckSettings) -> CheckResult
         """
         Checking of single website.
 
@@ -135,5 +147,6 @@ class Worker(object):
             error=error,
             pattern_found=pattern_found,
             status_code=status_code,
+            started_at=call_started.timestamp(),
             url=website.url,
         )
